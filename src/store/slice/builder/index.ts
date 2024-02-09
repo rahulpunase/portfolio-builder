@@ -3,11 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit/react";
 
 type InitialState = {
+  title: string;
   sections: Array<CommonSections>;
   isPublished: boolean;
 };
 
 export const initialState: InitialState = {
+  title: "",
   sections: [],
   isPublished: false,
 };
@@ -16,6 +18,9 @@ const BuilderSlice = createSlice({
   name: "builder",
   initialState,
   reducers: {
+    updateTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload;
+    },
     addSection: (
       state,
       action: PayloadAction<{ sectionType: MetaSectionType }>
@@ -29,4 +34,4 @@ const BuilderSlice = createSlice({
 });
 
 export default BuilderSlice.reducer;
-export const { addSection } = BuilderSlice.actions;
+export const { addSection, updateTitle } = BuilderSlice.actions;

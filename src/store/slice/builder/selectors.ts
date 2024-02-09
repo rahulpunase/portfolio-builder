@@ -8,3 +8,7 @@ export const selectSectionList = createSelector(
   selectBuilder,
   (state) => state.sections
 );
+
+export const selectTitles = createSelector(selectBuilder, (state) => ({
+  title: state.title,
+}));

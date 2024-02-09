@@ -1,6 +1,6 @@
 import LogoEditor from "../LogoEditor";
 import PersonalInfoEditor from "./PersonalInfo";
-import TitleEditor from "./Title";
+import Title from "./Title";
 
 const InfoSection = () => {
   return (
@@ -10,7 +10,7 @@ const InfoSection = () => {
         <PersonalInfoEditor />
       </div>
       <div className="flex flex-grow ml-[80px] justify-center items-center">
-        <TitleEditor />
+        <Title />
       </div>
     </div>
   );

@@ -1,5 +1,11 @@
+import Builder from "@/components/Builder";
+
 const Preview = () => {
-  return <div>index</div>;
+  return (
+    <>
+      <Builder />
+    </>
+  );
 };
 
 export default Preview;
