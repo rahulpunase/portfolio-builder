@@ -1,5 +1,5 @@
 import Input from "@/lib/ui/components/input";
-import LogoEditor from "@/pages/Builder/_components/LogoEditor";
+import LogoEditor from "@/components/Builder/LogoEditor";
 
 const ProjectCard = () => {
   return (

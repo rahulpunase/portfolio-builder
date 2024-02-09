@@ -1,4 +1,5 @@
 import Button from "@/lib/ui/components/button";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -9,6 +10,7 @@ const Header = () => {
         <div>Preferences</div>
       </div>
       <div>
+        <Link to="/preview">Preview</Link>
         <Button />
       </div>
     </header>

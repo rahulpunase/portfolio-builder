@@ -1,4 +1,3 @@
-import Input from "@/lib/ui/components/input";
 import { cn } from "@/lib/ui/utils";
 import defaultImage from "@/assets/images/mynaui_image.png";
 import { ChangeEvent, useState } from "react";
