@@ -21,7 +21,7 @@ const LexEditor = (props: LexEditor) => {
           dangerouslySetInnerHTML={{
             __html: props.htmlValue,
           }}
-        ></div>
+        />
       ) : (
         <Editor {...props} />
       )}

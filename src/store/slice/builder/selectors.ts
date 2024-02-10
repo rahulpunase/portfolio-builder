@@ -11,4 +11,15 @@ export const selectSectionList = createSelector(
 
 export const selectTitles = createSelector(selectBuilder, (state) => ({
   title: state.title,
+  subtitle: state.subtitle,
+}));
+
+export const selectProfilePicture = createSelector(
+  selectBuilder,
+  (state) => state.profilePicture
+);
+
+export const selectPersonalInfo = createSelector(selectBuilder, (state) => ({
+  name: state.name,
+  email: state.email,
 }));

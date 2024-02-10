@@ -11,10 +11,14 @@ export default {
       editorPlaceholder: "#C6C6C6",
       black: "#000000",
       transparent: "transparent",
+      secondary: "#e4e4e4",
       border: {
         1: "#AEAEAE",
         dark: "#828282",
       },
+    },
+    fontFamily: {
+      sans: ['"Inter"'],
     },
   },
   plugins: [],

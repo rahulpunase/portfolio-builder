@@ -1,12 +1,15 @@
 import { cn } from "@/lib/ui/utils";
 import defaultImage from "@/assets/images/mynaui_image.png";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
+import useIsInPreviewMode from "@/lib/utils/hooks/useIsInPreviewMode";
 
 type LogoEditor = {
   variant: "small" | "large";
+  onUpdate: (dataUrl: string | ArrayBuffer | null) => void;
+  preview: string;
 };
-const LogoEditor = ({ variant }: LogoEditor) => {
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+const LogoEditor = ({ variant, onUpdate, preview }: LogoEditor) => {
+  const isInPreviewMode = useIsInPreviewMode();
 
   const generatePreview = (ev: ChangeEvent<HTMLInputElement>) => {
     if (!ev.target.files) {
@@ -15,8 +18,9 @@ const LogoEditor = ({ variant }: LogoEditor) => {
     const imageFile = ev.target.files[0];
 
     const reader = new FileReader();
+
     reader.onload = () => {
-      setPreview(reader.result);
+      onUpdate(reader.result);
     };
 
     reader.readAsDataURL(imageFile);
@@ -25,15 +29,16 @@ const LogoEditor = ({ variant }: LogoEditor) => {
   return (
     <label
       className={cn(
-        " bg-backgroundHighlight border border-dashed p-1 flex cursor-pointer justify-center items-center border-border-1",
+        " bg-backgroundHighlight border relative overflow-hidden border-dashed p-1 flex cursor-pointer justify-center items-center border-border-1",
         variant === "small" && "w-[25px] aspect-square rounded-[5px]",
-        variant === "large" && "w-[295px] aspect-square rounded-[25px]"
+        variant === "large" && "w-[295px] aspect-square rounded-[25px]",
+        preview && "border-none"
       )}
     >
       <img
         hidden={!preview}
         src={preview?.toString()}
-        className="aspect-auto"
+        className="aspect-auto absolute top-0 left-0 w-full h-full object-cover"
       />
       <img
         hidden={!!preview}
@@ -45,9 +50,11 @@ const LogoEditor = ({ variant }: LogoEditor) => {
         src={defaultImage}
         alt="Default"
       />
-      <form>
-        <input hidden type="file" onChange={generatePreview} />
-      </form>
+      {!isInPreviewMode && (
+        <form>
+          <input hidden type="file" onChange={generatePreview} />
+        </form>
+      )}
     </label>
   );
 };

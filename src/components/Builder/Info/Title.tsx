@@ -1,15 +1,14 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectTitles } from "@/store/slice/builder/selectors";
-import { updateTitle } from "@/store/slice/builder";
+import { updateSubtitle, updateTitle } from "@/store/slice/builder";
 import LexEditor from "@/components/LexEditor";
 
 const Title = () => {
-  const { title } = useAppSelector(selectTitles);
+  const { title, subtitle } = useAppSelector(selectTitles);
   const dispatch = useAppDispatch();
 
-  const onMainTitleUpdate = (html: string) => {
-    dispatch(updateTitle(html));
-  };
+  const onMainTitleUpdate = (html: string) => dispatch(updateTitle(html));
+  const onSubtitleUpdate = (html: string) => dispatch(updateSubtitle(html));
 
   return (
     <div className="flex flex-col w-full">
@@ -31,7 +30,8 @@ const Title = () => {
           theme={{
             paragraph: "text-[18px]",
           }}
-          htmlValue=""
+          htmlValue={subtitle}
+          onUpdate={onSubtitleUpdate}
         />
       </div>
     </div>
