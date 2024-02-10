@@ -11,7 +11,9 @@ export type Skills = {
   content: string;
 };
 
-export type AboutSection = {};
+export type AboutSection = {
+  content: string;
+};
 
 export type SkillsetsSection = {
   children?: Array<Skills>;

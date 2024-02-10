@@ -1,3 +1,4 @@
+import LexEditor from "@/components/LexEditor";
 import Input from "@/lib/ui/components/input";
 
 const SkillCard = () => {
@@ -6,6 +7,7 @@ const SkillCard = () => {
       <form>
         <Input placeholder="Untitled" className="mb-2" />
         <Input placeholder="Write description here" className="text-[14px]" />
+        <LexEditor name="" />
       </form>
     </div>
   );

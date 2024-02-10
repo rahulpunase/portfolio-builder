@@ -27,19 +27,16 @@ const CustomUpdate = ({ onUpdate }) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    editor.update(() => {
-      console.log(editor.toJSON());
-    });
-
     editor.registerCommand(
       BLUR_COMMAND,
       () => {
         const htmlString = $generateHtmlFromNodes(editor, null);
         onUpdate?.(htmlString);
+        return false;
       },
       COMMAND_PRIORITY_EDITOR
     );
-  }, [editor]);
+  }, [editor, onUpdate]);
 
   return null;
 };

@@ -28,6 +28,7 @@ import {
   BLUR_COMMAND,
   COMMAND_PRIORITY_LOW,
   FOCUS_COMMAND,
+  LexicalEditor,
 } from "lexical";
 import FloatingToolbar from "./FloatingToolbar";
 
@@ -39,7 +40,9 @@ function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
 }
 
-const editorConfig: InitialConfigType = {
+const editorConfig: (
+  setRef: (_editor: LexicalEditor) => void
+) => InitialConfigType = (setRef) => ({
   // The editor theme
   namespace: "About",
   theme: {
@@ -50,6 +53,9 @@ const editorConfig: InitialConfigType = {
   // Handling of errors during update
   onError(error) {
     throw error;
+  },
+  editorState(editor) {
+    setRef(editor);
   },
   // Any custom nodes go here
   nodes: [
@@ -65,7 +71,7 @@ const editorConfig: InitialConfigType = {
     AutoLinkNode,
     LinkNode,
   ],
-};
+});
 type RegisterCommandsProps = {
   onBlur?: () => void;
   onFocus?: () => void;
@@ -115,11 +121,17 @@ function DefaultNodes() {
   return null;
 }
 
-export type AboutEditorProps = RegisterCommandsProps;
+export type AboutEditorProps = {
+  setEditorRef: (_editor: LexicalEditor) => void;
+} & RegisterCommandsProps;
 
-export default function AboutYouEditor({ onBlur, onFocus }: AboutEditorProps) {
+export default function AboutYouEditor({
+  onBlur,
+  onFocus,
+  setEditorRef,
+}: AboutEditorProps) {
   return (
-    <LexicalComposer initialConfig={editorConfig}>
+    <LexicalComposer initialConfig={editorConfig(setEditorRef)}>
       <div className="relative">
         {/* <ToolbarPlugin /> */}
         <RichTextPlugin

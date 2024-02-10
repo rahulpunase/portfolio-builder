@@ -1,4 +1,4 @@
-import { CommonSections, MetaSectionType } from "@/lib/constants";
+import { AboutSection, CommonSections, MetaSectionType } from "@/lib/constants";
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit/react";
 
@@ -41,6 +41,14 @@ const BuilderSlice = createSlice({
     updateEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
     },
+    updateAboutSection: (state, action: PayloadAction<{ html: string }>) => {
+      const sectionToUpdate = state.sections.find(
+        (section) => section.type === "ABOUT"
+      ) as AboutSection | undefined;
+      if (!sectionToUpdate) return;
+      console.log(action);
+      sectionToUpdate.content = action.payload.html;
+    },
     addSection: (
       state,
       action: PayloadAction<{ sectionType: MetaSectionType }>
@@ -61,4 +69,5 @@ export const {
   updateProfilePicture,
   updateName,
   updateEmail,
+  updateAboutSection,
 } = BuilderSlice.actions;
