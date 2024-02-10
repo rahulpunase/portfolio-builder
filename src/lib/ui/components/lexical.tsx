@@ -81,8 +81,6 @@ function LexicalEditor({
   onBlur,
   ...rest
 }: LexicalEditorProps) {
-  const EMPTY_CONTENT =
-    '{"root":{"children":[{"children":[],"direction":null,"format":"","indent":0,"type":"paragraph","version":1}],"direction":null,"format":"","indent":0,"type":"root","version":1}}';
   const initialConfig: InitialConfigType = {
     namespace: "MyEditor",
     theme: {
@@ -90,7 +88,6 @@ function LexicalEditor({
     },
     onError,
     nodes: [HeadingNode],
-    editorState: EMPTY_CONTENT,
   };
 
   return (

@@ -8,39 +8,55 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
-import {
-  BLUR_COMMAND,
-  COMMAND_PRIORITY_EDITOR,
-  EditorThemeClasses,
-} from "lexical";
+import { $getRoot, EditorThemeClasses } from "lexical";
 import { useEffect } from "react";
-import { $generateHtmlFromNodes } from "@lexical/html";
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
+
+type CustomUpdateProps = {
+  htmlValue?: string;
+  onValueChange?: (html: string) => void;
+};
 
 type EditorProps = {
   name: string;
   theme: EditorThemeClasses;
   placeholderText?: string;
-  onUpdate?: (html: string) => void;
-};
+} & CustomUpdateProps;
 
-const CustomUpdate = ({ onUpdate }) => {
+const CustomUpdate = ({ onValueChange, htmlValue }: CustomUpdateProps) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    editor.registerCommand(
-      BLUR_COMMAND,
-      () => {
+    editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
         const htmlString = $generateHtmlFromNodes(editor, null);
-        onUpdate?.(htmlString);
-        return false;
-      },
-      COMMAND_PRIORITY_EDITOR
-    );
-  }, [editor, onUpdate]);
+        onValueChange?.(htmlString);
+      });
+    });
+  }, [editor, onValueChange]);
+
+  useEffect(() => {
+    editor.update(() => {
+      if (htmlValue) {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(htmlValue, "text/html");
+        const nodes = $generateNodesFromDOM(editor, dom);
+        const root = $getRoot();
+        nodes.forEach((node) => root.append(node));
+        return;
+      }
+    });
+  }, [editor]);
 
   return null;
 };
-const Editor = ({ placeholderText, name, theme, onUpdate }: EditorProps) => {
+const Editor = ({
+  placeholderText,
+  name,
+  theme,
+  onValueChange,
+  htmlValue,
+}: EditorProps) => {
   const initialConfig: InitialConfigType = {
     namespace: name,
     onError: (error) => console.log(error),
@@ -67,8 +83,7 @@ const Editor = ({ placeholderText, name, theme, onUpdate }: EditorProps) => {
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
-        <CustomUpdate onUpdate={onUpdate} />
-        {/* <MyCustomAutoFocusPlugin onFocus={onFocus} onBlur={onBlur} /> */}
+        <CustomUpdate onValueChange={onValueChange} htmlValue={htmlValue} />
       </LexicalComposer>
     </div>
   );

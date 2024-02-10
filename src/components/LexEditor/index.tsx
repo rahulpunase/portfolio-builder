@@ -8,8 +8,8 @@ type LexEditor = {
   name: string;
   theme: EditorThemeClasses;
   placeholderText?: string;
-  htmlValue: string;
-  onUpdate?: (html: string) => void;
+  htmlValue?: string;
+  onValueChange?: (html: string) => void;
 };
 
 const LexEditor = (props: LexEditor) => {
@@ -19,7 +19,7 @@ const LexEditor = (props: LexEditor) => {
       {isInPreviewMode ? (
         <div
           dangerouslySetInnerHTML={{
-            __html: props.htmlValue,
+            __html: props.htmlValue || "",
           }}
         />
       ) : (

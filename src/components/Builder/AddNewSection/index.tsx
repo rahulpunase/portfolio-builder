@@ -7,6 +7,15 @@ import {
 } from "@/lib/ui/components/dropdownMenu";
 import { useAppDispatch } from "@/store";
 import { addSection } from "@/store/slice/builder";
+import {
+  Globe,
+  Lightbulb,
+  Link,
+  LucideIcon,
+  PencilRuler,
+  PinIcon,
+} from "lucide-react";
+import { ReactNode } from "react";
 
 const ButtonIcon = () => {
   return (
@@ -27,6 +36,35 @@ const AddNewSection = () => {
     );
   };
 
+  const iconMap: Record<
+    MetaSectionType,
+    {
+      icon: ReactNode;
+      color: string;
+    }
+  > = {
+    ABOUT: {
+      icon: <PinIcon className="h-4 w-4" />,
+      color: "#de5353",
+    },
+    SKILLS: {
+      icon: <Lightbulb className="h-4 w-4" />,
+      color: "#868621",
+    },
+    PROJECTS: {
+      icon: <PencilRuler className="h-4 w-4" />,
+      color: "#c55252",
+    },
+    EXPERIENCE: {
+      icon: <Globe className="h-4 w-4" />,
+      color: "#63a4b8",
+    },
+    CTA: {
+      icon: <Link className="h-4 w-4" />,
+      color: "#c2aa7c",
+    },
+  };
+
   return (
     <div className="w-full mb-32">
       <DropdownMenu>
@@ -42,7 +80,14 @@ const AddNewSection = () => {
               onClick={() => onClickHandler(sectionItem.type)}
               className="group"
             >
-              <ButtonIcon /> Add {sectionItem.name}
+              <div className="flex flex-row items-center">
+                <ButtonIcon />
+                <div style={{ color: iconMap[sectionItem.type].color }}>
+                  {iconMap[sectionItem.type].icon}
+                </div>{" "}
+                <span className="ml-2">Add</span>
+                {sectionItem.name}
+              </div>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>

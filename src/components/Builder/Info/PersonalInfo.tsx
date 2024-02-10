@@ -14,20 +14,25 @@ const PersonalInfo = () => {
       <form>
         <div className="flex flex-col">
           <Input
-            placeholder="Enter your name"
+            placeholder="Enter your name here"
             className="text-[16px] mb-1 font-semibold"
             name="name"
-            onBlur={(ev) => dispatch(updateName(ev.target.value))}
+            onChange={(ev) => dispatch(updateName(ev.target.value))}
+            value={personalInfo.name}
             defaultValue={personalInfo.name}
             readOnly={isInPreviewMode}
+            isInPreviewMode={isInPreviewMode}
           />
 
           <Input
             className="text-[14px]"
             name="email"
-            onBlur={(ev) => dispatch(updateEmail(ev.target.value))}
+            placeholder="Enter email"
+            onChange={(ev) => dispatch(updateEmail(ev.target.value))}
+            value={personalInfo.email}
             defaultValue={personalInfo.email}
             readOnly={isInPreviewMode}
+            isInPreviewMode={isInPreviewMode}
           />
         </div>
       </form>

@@ -21,6 +21,8 @@ import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPl
 import { TRANSFORMERS } from "@lexical/markdown";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useEffect } from "react";
+import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
+import { HashtagNode } from "@lexical/hashtag";
 import {
   $createParagraphNode,
   $createTextNode,
@@ -28,37 +30,46 @@ import {
   BLUR_COMMAND,
   COMMAND_PRIORITY_LOW,
   FOCUS_COMMAND,
-  LexicalEditor,
 } from "lexical";
 import FloatingToolbar from "./FloatingToolbar";
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
+import { cn } from "@/lib/ui/utils";
 
 // import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 // import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 // import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 
 function Placeholder() {
-  return <div className="editor-placeholder">Enter some rich text...</div>;
+  return (
+    <div
+      className={cn(
+        "absolute text-editorPlaceholder select-none pointer-events-none top-[50%] translate-y-[-50%] overflow-hidden"
+      )}
+    >
+      Enter something about you...
+    </div>
+  );
 }
 
-const editorConfig: (
-  setRef: (_editor: LexicalEditor) => void
-) => InitialConfigType = (setRef) => ({
+const editorConfig: InitialConfigType = {
   // The editor theme
   namespace: "About",
   theme: {
     heading: {
-      h1: "text-[30px]",
+      h1: "text-[30px] font-semibold",
     },
+    list: {
+      ul: "list-disc ml-6",
+    },
+    hashtag: "text-hashtag",
   },
   // Handling of errors during update
   onError(error) {
     throw error;
   },
-  editorState(editor) {
-    setRef(editor);
-  },
   // Any custom nodes go here
   nodes: [
+    HashtagNode,
     HeadingNode,
     ListNode,
     ListItemNode,
@@ -71,12 +82,19 @@ const editorConfig: (
     AutoLinkNode,
     LinkNode,
   ],
-});
+};
 type RegisterCommandsProps = {
   onBlur?: () => void;
   onFocus?: () => void;
+  onValueChange?: (html: string) => void;
+  isSectionInEditMode: boolean;
 };
-function RegisterCommands({ onBlur, onFocus }: RegisterCommandsProps) {
+function RegisterCommands({
+  onBlur,
+  onFocus,
+  onValueChange,
+  isSectionInEditMode,
+}: RegisterCommandsProps) {
   const [editor] = useLexicalComposerContext();
 
   editor.registerCommand(
@@ -96,13 +114,42 @@ function RegisterCommands({ onBlur, onFocus }: RegisterCommandsProps) {
     },
     COMMAND_PRIORITY_LOW
   );
+
+  useEffect(() => {
+    editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const htmlString = $generateHtmlFromNodes(editor, null);
+        onValueChange?.(htmlString);
+      });
+    });
+  }, [editor, onValueChange]);
+
+  useEffect(() => {
+    editor.setEditable(isSectionInEditMode);
+    if (isSectionInEditMode) {
+      editor.focus();
+    }
+  }, [editor, isSectionInEditMode]);
+
   return null;
 }
 
-function DefaultNodes() {
+type DefaultNodesProps = {
+  defaultContent?: string;
+};
+
+function DefaultNodes({ defaultContent }: DefaultNodesProps) {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
     editor.update(() => {
+      if (defaultContent) {
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(defaultContent, "text/html");
+        const nodes = $generateNodesFromDOM(editor, dom);
+        const root = $getRoot();
+        nodes.forEach((node) => root.append(node));
+        return;
+      }
       const root = $getRoot();
       root.clear();
       const h1 = $createHeadingNode("h1");
@@ -121,36 +168,40 @@ function DefaultNodes() {
   return null;
 }
 
-export type AboutEditorProps = {
-  setEditorRef: (_editor: LexicalEditor) => void;
-} & RegisterCommandsProps;
+export type RichTextEditor = RegisterCommandsProps & DefaultNodesProps;
 
-export default function AboutYouEditor({
+export default function RichTextEditor({
   onBlur,
   onFocus,
-  setEditorRef,
-}: AboutEditorProps) {
+  onValueChange,
+  isSectionInEditMode,
+  defaultContent,
+}: RichTextEditor) {
   return (
-    <LexicalComposer initialConfig={editorConfig(setEditorRef)}>
+    <LexicalComposer initialConfig={editorConfig}>
       <div className="relative">
         {/* <ToolbarPlugin /> */}
         <RichTextPlugin
-          contentEditable={<ContentEditable className="p-4 outline-none" />}
+          contentEditable={<ContentEditable className="outline-none" />}
           placeholder={<Placeholder />}
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
-        {/* <TreeViewPlugin /> */}
         <AutoFocusPlugin />
-        {/* <CodeHighlightPlugin /> */}
         <ListPlugin />
         <LinkPlugin />
+        <HashtagPlugin />
         {/* <AutoLinkPlugin /> */}
         {/* <ListMaxIndentLevelPlugin maxDepth={7} /> */}
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-        <DefaultNodes />
-        <RegisterCommands onBlur={onBlur} onFocus={onFocus} />
-        <FloatingToolbar />
+        <DefaultNodes defaultContent={defaultContent} />
+        <RegisterCommands
+          onBlur={onBlur}
+          onFocus={onFocus}
+          onValueChange={onValueChange}
+          isSectionInEditMode={isSectionInEditMode}
+        />
+        {isSectionInEditMode && <FloatingToolbar />}
       </div>
     </LexicalComposer>
   );

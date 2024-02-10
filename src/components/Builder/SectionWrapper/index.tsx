@@ -11,10 +11,10 @@ const SectionSelector = ({ type }: { type: MetaSectionType }) => {
     return <AboutYou />;
   }
   if (type === "SKILLS") {
-    return <SkillSet />;
+    return <SkillSet type={type} />;
   }
   if (type === "PROJECTS") {
-    return <Projects />;
+    return <Projects type={type} />;
   }
   return null;
 };

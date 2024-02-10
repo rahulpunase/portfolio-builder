@@ -1,9 +1,18 @@
 import { InputHTMLAttributes } from "react";
 import { cn } from "../utils";
 
-type InputProps = {} & InputHTMLAttributes<HTMLInputElement>;
-const Input = ({ className, ...rest }: InputProps) => {
-  return (
+type InputProps = {
+  isInPreviewMode: boolean;
+} & InputHTMLAttributes<HTMLInputElement>;
+const Input = ({
+  className,
+  isInPreviewMode,
+  defaultValue,
+  ...rest
+}: InputProps) => {
+  return isInPreviewMode ? (
+    <div className={className}>{defaultValue}</div>
+  ) : (
     <input
       {...rest}
       className={cn(

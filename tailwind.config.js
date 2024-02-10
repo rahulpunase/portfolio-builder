@@ -12,6 +12,7 @@ export default {
       black: "#000000",
       transparent: "transparent",
       secondary: "#e4e4e4",
+      hashtag: "#0094ff",
       border: {
         1: "#AEAEAE",
         dark: "#828282",

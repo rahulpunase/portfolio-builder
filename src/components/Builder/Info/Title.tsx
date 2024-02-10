@@ -17,10 +17,10 @@ const Title = () => {
           name="title"
           placeholderText="Click to add title"
           theme={{
-            paragraph: "text-[70px]",
+            paragraph: "text-[70px] leading-tight",
           }}
           htmlValue={title}
-          onUpdate={onMainTitleUpdate}
+          onValueChange={onMainTitleUpdate}
         />
       </div>
       <div className="mt-4">
@@ -31,7 +31,7 @@ const Title = () => {
             paragraph: "text-[18px]",
           }}
           htmlValue={subtitle}
-          onUpdate={onSubtitleUpdate}
+          onValueChange={onSubtitleUpdate}
         />
       </div>
     </div>

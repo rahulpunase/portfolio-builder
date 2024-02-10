@@ -1,37 +1,18 @@
-import { forwardRef, useImperativeHandle, useRef } from "react";
-import withSectionHOC, { WrappedProps, WrappedRef } from "../withSectionHOC";
-import AboutYouEditor from "./AboutYouEditor";
-import type { LexicalEditor } from "lexical";
-import { useAppDispatch } from "@/store";
-import { updateAboutSection } from "@/store/slice/builder";
-import { $generateHtmlFromNodes } from "@lexical/html";
+import useIsInPreviewMode from "@/lib/utils/hooks/useIsInPreviewMode";
+import AboutYouWrapper from "./AboutYouWrapper";
+import { useAppSelector } from "@/store";
+import { selectAboutYouSetSection } from "@/store/slice/builder/selectors";
 
-const ExtendibleAboutYouEditor = forwardRef<WrappedRef, WrappedProps>(
-  (props, ref) => {
-    const editorRef = useRef<LexicalEditor | null>(null);
-    const setEditorRef = (_editor: LexicalEditor) => {
-      editorRef.current = _editor;
-    };
-    const dispatch = useAppDispatch();
-
-    useImperativeHandle(ref, () => ({
-      onSaveHandler: () => {
-        if (!editorRef.current) return;
-        editorRef.current.update(() => {
-          if (!editorRef.current) return;
-          dispatch(
-            updateAboutSection({
-              html: $generateHtmlFromNodes(editorRef.current),
-            })
-          );
-        });
-      },
-    }));
-
-    return <AboutYouEditor setEditorRef={setEditorRef} {...props} />;
-  }
-);
-
-const AboutYou = withSectionHOC(ExtendibleAboutYouEditor);
+const AboutYou = () => {
+  const isInPreviewMode = useIsInPreviewMode();
+  const aboutYouSection = useAppSelector(selectAboutYouSetSection);
+  return isInPreviewMode ? (
+    <div
+      dangerouslySetInnerHTML={{ __html: aboutYouSection?.content || "" }}
+    ></div>
+  ) : (
+    <AboutYouWrapper type="ABOUT" />
+  );
+};
 
 export default AboutYou;

@@ -7,8 +7,9 @@ export type MetaSectionType =
 
 export type Skills = {
   title: string;
-  subtitle: string;
+  description: string;
   content: string;
+  id: string;
 };
 
 export type AboutSection = {
@@ -49,7 +50,6 @@ export type MetaConfigSections<K extends MetaSectionType> = K extends "ABOUT"
   : never;
 
 export type DefaultSectionConfig<K extends MetaSectionType> = {
-  displayName?: string;
   order: number;
   type: MetaSectionType;
 } & MetaConfigSections<K>;
