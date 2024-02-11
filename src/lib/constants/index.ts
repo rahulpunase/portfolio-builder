@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 export type MetaSectionType =
   | "ABOUT"
   | "SKILLS"
@@ -22,8 +24,10 @@ export type SkillsetsSection = {
 
 export type Projects = {
   title: string;
-  subtitle: string;
+  description: string;
   link: string;
+  id: string;
+  logo: string;
 };
 
 export type ProjectSection = {
@@ -32,9 +36,25 @@ export type ProjectSection = {
   children?: Array<Projects>;
 };
 
+export type Experience = {
+  companyTitle: string;
+  designation: string;
+  location: string;
+  timeline: string;
+  description: string;
+  logo: string;
+  id: string;
+};
+
 export type ExperienceSection = {
   title?: string;
-  children?: Array<Projects>;
+  subtext?: string;
+  children?: Array<Experience>;
+};
+
+export type CTASection = {
+  title: string;
+  subtext: string;
 };
 
 export type MetaConfigSections<K extends MetaSectionType> = K extends "ABOUT"
@@ -46,7 +66,7 @@ export type MetaConfigSections<K extends MetaSectionType> = K extends "ABOUT"
   : K extends "EXPERIENCE"
   ? ExperienceSection
   : K extends "CTA"
-  ? ExperienceSection
+  ? CTASection
   : never;
 
 export type DefaultSectionConfig<K extends MetaSectionType> = {
@@ -58,7 +78,8 @@ export type CommonSections =
   | DefaultSectionConfig<"ABOUT">
   | DefaultSectionConfig<"SKILLS">
   | DefaultSectionConfig<"PROJECTS">
-  | DefaultSectionConfig<"EXPERIENCE">;
+  | DefaultSectionConfig<"EXPERIENCE">
+  | DefaultSectionConfig<"CTA">;
 
 export type MetaSections = {
   [key in MetaSectionType]: MetaConfigSections<key>;
@@ -98,3 +119,62 @@ export const Sections: Array<SectionItem> = [
     type: "CTA",
   },
 ];
+
+export const getDefaultDataForSkills = (
+  order: number
+): DefaultSectionConfig<"SKILLS"> => {
+  return {
+    order,
+    type: "SKILLS",
+    children: [
+      {
+        title: "",
+        description: "",
+        content: "",
+        id: uuid(),
+      },
+    ],
+  };
+};
+
+export const getDefaultDataForProjects = (
+  order: number
+): DefaultSectionConfig<"PROJECTS"> => {
+  return {
+    order,
+    type: "PROJECTS",
+    subtext: "",
+    title: "",
+    children: [
+      {
+        description: "",
+        link: "",
+        title: "",
+        id: uuid(),
+        logo: "",
+      },
+    ],
+  };
+};
+
+export const getDefaultDataForExperience = (
+  order: number
+): DefaultSectionConfig<"EXPERIENCE"> => {
+  return {
+    order,
+    type: "EXPERIENCE",
+    subtext: "",
+    title: "",
+    children: [
+      {
+        description: "",
+        id: uuid(),
+        logo: "",
+        companyTitle: "",
+        designation: "",
+        location: "",
+        timeline: "",
+      },
+    ],
+  };
+};

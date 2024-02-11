@@ -15,6 +15,7 @@ const Input = ({
   ) : (
     <input
       {...rest}
+      defaultValue={defaultValue}
       className={cn(
         "outline-none bg-transparent placeholder:text-editorPlaceholder",
         className

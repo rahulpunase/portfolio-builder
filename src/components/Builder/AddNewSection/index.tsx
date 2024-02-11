@@ -85,7 +85,7 @@ const AddNewSection = () => {
                 <div style={{ color: iconMap[sectionItem.type].color }}>
                   {iconMap[sectionItem.type].icon}
                 </div>{" "}
-                <span className="ml-2">Add</span>
+                <div className="ml-2 mr-2">Add</div>
                 {sectionItem.name}
               </div>
             </DropdownMenuItem>

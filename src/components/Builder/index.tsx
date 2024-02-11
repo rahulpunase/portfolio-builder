@@ -11,16 +11,16 @@ const Builder = () => {
   const isInPreviewMode = useIsInPreviewMode();
 
   return (
-    <>
+    <div>
       <SiteHeader />
-      <div className="mt-20">
+      <div className="sm:mt-20 mt-8 mb-8 sm:mb-0">
         <InfoSection />
       </div>
       <div>
         <SectionWrapper />
         {!sectionList.length && !isInPreviewMode && <AddNewSection />}
       </div>
-    </>
+    </div>
   );
 };
 

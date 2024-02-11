@@ -1,20 +1,35 @@
-import Input from "@/lib/ui/components/input";
-import withSectionHOC from "../withSectionHOC";
 import ProjectCard from "./ProjectCard";
+import useIsInPreviewMode from "@/lib/utils/hooks/useIsInPreviewMode";
+import { useAppSelector } from "@/store";
+import { selectProjectsSection } from "@/store/slice/builder/selectors";
+import ProjectsWrapper from "./ProjectsWrapper";
+import ProjectTitle from "../SectionTitle";
 
-const Projects = withSectionHOC(() => {
-  return (
-    <div className="flex w-full flex-col">
-      <div className="flex flex-col mb-6">
-        <Input value="Projects" className="text-[30px] mb-1" />
-        <Input placeholder="Add subtext here" className="text-[14px]" />
-      </div>
-      <div className="flex flex-wrap gap-4 ">
-        <ProjectCard />
-        <ProjectCard />
+const Projects = () => {
+  const isInPreviewMode = useIsInPreviewMode();
+  const projectSection = useAppSelector(selectProjectsSection);
+  return isInPreviewMode ? (
+    <div className="flex w-full flex-wrap flex-col gap-4">
+      <ProjectTitle
+        isInPreviewMode={isInPreviewMode}
+        defaultTitle={projectSection?.title ?? ""}
+        subtext={projectSection?.subtext ?? ""}
+        isSectionInEditMode={false}
+      />
+      <div className="flex flex-row gap-4 flex-wrap w-full justify-between">
+        {projectSection?.children?.map((item) => (
+          <ProjectCard
+            data={item}
+            key={item.id}
+            isInPreviewMode={isInPreviewMode}
+            isSectionInEditMode={false}
+          />
+        ))}
       </div>
     </div>
+  ) : (
+    <ProjectsWrapper type="PROJECTS" />
   );
-});
+};
 
 export default Projects;

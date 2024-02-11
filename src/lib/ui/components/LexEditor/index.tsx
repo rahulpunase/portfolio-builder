@@ -10,6 +10,7 @@ type LexEditor = {
   placeholderText?: string;
   htmlValue?: string;
   onValueChange?: (html: string) => void;
+  isSectionInEditMode?: boolean;
 };
 
 const LexEditor = (props: LexEditor) => {

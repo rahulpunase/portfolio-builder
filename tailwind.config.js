@@ -13,9 +13,11 @@ export default {
       transparent: "transparent",
       secondary: "#e4e4e4",
       hashtag: "#0094ff",
+      header: "#232323",
       border: {
         1: "#AEAEAE",
         dark: "#828282",
+        light: "#DADADA",
       },
     },
     fontFamily: {

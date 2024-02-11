@@ -7,8 +7,6 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
-// import TreeViewPlugin from "./plugins/TreeViewPlugin";
-// import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { $createHeadingNode, HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
@@ -35,10 +33,6 @@ import FloatingToolbar from "./FloatingToolbar";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { cn } from "@/lib/ui/utils";
 
-// import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
-// import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
-// import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
-
 function Placeholder() {
   return (
     <div
@@ -52,7 +46,6 @@ function Placeholder() {
 }
 
 const editorConfig: InitialConfigType = {
-  // The editor theme
   namespace: "About",
   theme: {
     heading: {
@@ -191,8 +184,7 @@ export default function RichTextEditor({
         <ListPlugin />
         <LinkPlugin />
         <HashtagPlugin />
-        {/* <AutoLinkPlugin /> */}
-        {/* <ListMaxIndentLevelPlugin maxDepth={7} /> */}
+
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <DefaultNodes defaultContent={defaultContent} />
         <RegisterCommands

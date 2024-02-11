@@ -1,8 +1,13 @@
 import {
   CommonSections,
   DefaultSectionConfig,
+  Experience,
   MetaSectionType,
+  Projects,
   Skills,
+  getDefaultDataForExperience,
+  getDefaultDataForProjects,
+  getDefaultDataForSkills,
 } from "@/lib/constants";
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit/react";
@@ -47,13 +52,15 @@ const BuilderSlice = createSlice({
     updateEmail: (state, action: PayloadAction<string>) => {
       state.email = action.payload;
     },
-    updateAboutSection: (state, action: PayloadAction<{ html: string }>) => {
+
+    saveAboutSection: (state, action: PayloadAction<{ html: string }>) => {
       const sectionToUpdate = state.sections.find(
         (section) => section.type === "ABOUT"
       ) as DefaultSectionConfig<"ABOUT"> | undefined;
       if (!sectionToUpdate) return;
       sectionToUpdate.content = action.payload.html;
     },
+
     addCardToSkillSection: (state) => {
       const sectionToUpdate = state.sections.find(
         (section) => section.type === "SKILLS"
@@ -64,6 +71,36 @@ const BuilderSlice = createSlice({
         description: "",
         content: "",
         id: uuid(),
+      });
+    },
+
+    addCardToProjectsSection: (state) => {
+      const sectionToUpdate = state.sections.find(
+        (section) => section.type === "PROJECTS"
+      ) as DefaultSectionConfig<"PROJECTS"> | undefined;
+      if (!sectionToUpdate) return;
+      sectionToUpdate.children?.push({
+        title: "",
+        description: "",
+        link: "",
+        logo: "",
+        id: uuid(),
+      });
+    },
+
+    addCardToExperienceSection: (state) => {
+      const sectionToUpdate = state.sections.find(
+        (section) => section.type === "EXPERIENCE"
+      ) as DefaultSectionConfig<"EXPERIENCE"> | undefined;
+      if (!sectionToUpdate) return;
+      sectionToUpdate.children?.push({
+        description: "",
+        id: uuid(),
+        logo: "",
+        companyTitle: "",
+        designation: "",
+        location: "",
+        timeline: "",
       });
     },
 
@@ -80,29 +117,77 @@ const BuilderSlice = createSlice({
       sectionToUpdate.children = action.payload.children;
     },
 
+    saveProjectSection: (
+      state,
+      action: PayloadAction<{
+        children: Projects[];
+        title: string;
+        subtext: string;
+      }>
+    ) => {
+      const sectionToUpdate = state.sections.find(
+        (section) => section.type === "PROJECTS"
+      ) as DefaultSectionConfig<"PROJECTS"> | undefined;
+      if (!sectionToUpdate) return;
+      sectionToUpdate.title = action.payload.title;
+      sectionToUpdate.subtext = action.payload.subtext;
+      sectionToUpdate.children = action.payload.children;
+    },
+
+    saveExperienceSection: (
+      state,
+      action: PayloadAction<{
+        children: Experience[];
+        title: string;
+        subtext: string;
+      }>
+    ) => {
+      const sectionToUpdate = state.sections.find(
+        (section) => section.type === "EXPERIENCE"
+      ) as DefaultSectionConfig<"EXPERIENCE"> | undefined;
+      if (!sectionToUpdate) return;
+      console.log({ action });
+      sectionToUpdate.title = action.payload.title;
+      sectionToUpdate.subtext = action.payload.subtext;
+      sectionToUpdate.children = action.payload.children;
+    },
+
+    saveCTASection: (
+      state,
+      action: PayloadAction<{ title: string; subtext: string }>
+    ) => {
+      const sectionToUpdate = state.sections.find(
+        (section) => section.type === "CTA"
+      ) as DefaultSectionConfig<"CTA"> | undefined;
+      if (!sectionToUpdate) return;
+      sectionToUpdate.title = action.payload.title;
+      sectionToUpdate.subtext = action.payload.subtext;
+    },
+
     addSection: (
       state,
       action: PayloadAction<{ sectionType: MetaSectionType }>
     ) => {
+      const item = state.sections.find(
+        (section) => section.type === action.payload.sectionType
+      );
+      if (item) return;
+      const order = state.sections.length;
       if (action.payload.sectionType === "SKILLS") {
-        const itemToAdd: DefaultSectionConfig<"SKILLS"> = {
-          children: [
-            {
-              title: "",
-              description: "",
-              content: "",
-              id: uuid(),
-            },
-          ],
-          type: "SKILLS",
-          order: 1,
-        };
-        state.sections.push(itemToAdd as DefaultSectionConfig<"SKILLS">);
+        state.sections.push(getDefaultDataForSkills(order));
+        return;
+      }
+      if (action.payload.sectionType === "PROJECTS") {
+        state.sections.push(getDefaultDataForProjects(order));
+        return;
+      }
+      if (action.payload.sectionType === "EXPERIENCE") {
+        state.sections.push(getDefaultDataForExperience(order));
         return;
       }
       state.sections.push({
         type: action.payload.sectionType,
-        order: 1,
+        order: order,
       });
     },
 
@@ -119,6 +204,26 @@ const BuilderSlice = createSlice({
         state.sections.splice(index, 1);
       }
     },
+
+    sort: (
+      state,
+      action: PayloadAction<{
+        dir: "up" | "down";
+        index: number;
+      }>
+    ) => {
+      const sections = [...state.sections];
+      const { dir, index } = action.payload;
+
+      const nextIndex = dir === "down" ? index + 1 : index - 1;
+
+      const temp = sections[index];
+      temp.order = nextIndex;
+      sections[index] = sections[nextIndex];
+      sections[index].order = index;
+      sections[nextIndex] = temp;
+      state.sections = sections;
+    },
   },
 });
 
@@ -130,8 +235,14 @@ export const {
   updateProfilePicture,
   updateName,
   updateEmail,
-  updateAboutSection,
+  saveAboutSection,
   addCardToSkillSection,
   deleteSection,
   saveSkillSection,
+  addCardToProjectsSection,
+  saveProjectSection,
+  addCardToExperienceSection,
+  saveExperienceSection,
+  saveCTASection,
+  sort,
 } = BuilderSlice.actions;

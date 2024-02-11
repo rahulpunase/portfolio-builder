@@ -2,7 +2,6 @@ import { forwardRef, useImperativeHandle, useRef } from "react";
 import withSectionHOC, { WrappedProps, WrappedRef } from "../withSectionHOC";
 import AddNewCard from "./AddNewCard";
 import SkillCard from "./SkillCard";
-import { LexicalEditor } from "lexical";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectSkillsSetSection } from "@/store/slice/builder/selectors";
 import { Skills } from "@/lib/constants";
@@ -10,11 +9,7 @@ import { saveSkillSection } from "@/store/slice/builder";
 
 const ExtendibleAboutYouEditor = forwardRef<WrappedRef, WrappedProps>(
   (props, ref) => {
-    const editorRef = useRef<LexicalEditor | null>(null);
     const selectSkillSetSection = useAppSelector(selectSkillsSetSection);
-    const setEditorRef = (_editor: LexicalEditor) => {
-      editorRef.current = _editor;
-    };
     const dispatch = useAppDispatch();
 
     const cardRef = useRef<
@@ -28,29 +23,12 @@ const ExtendibleAboutYouEditor = forwardRef<WrappedRef, WrappedProps>(
       >
     >({});
 
-    const onTitleChange = (value: string, key: string) => {
+    const onValueChange = (value: string, key: string, field: keyof Skills) => {
       if (!cardRef.current) return;
       cardRef.current[key] = {
         ...cardRef.current[key],
-        title: value,
+        [field]: value,
       };
-    };
-
-    const onDescriptionChange = (value: string, key: string) => {
-      if (!cardRef.current) return;
-      cardRef.current[key] = {
-        ...cardRef.current[key],
-        description: value,
-      };
-    };
-
-    const onContentChange = (value: string, key: string) => {
-      if (!cardRef.current) return;
-      cardRef.current[key] = {
-        ...cardRef.current[key],
-        content: value,
-      };
-      console.log(cardRef);
     };
 
     useImperativeHandle(ref, () => ({
@@ -77,9 +55,8 @@ const ExtendibleAboutYouEditor = forwardRef<WrappedRef, WrappedProps>(
               isSectionInEditMode={props.isSectionInEditMode}
               key={item.id}
               id={item.id}
-              onTitleChange={onTitleChange}
-              onDescriptionChange={onDescriptionChange}
-              onContentChange={onContentChange}
+              onValueChange={onValueChange}
+              data={item}
             />
           ))}
           {props.isSectionInEditMode && <AddNewCard />}

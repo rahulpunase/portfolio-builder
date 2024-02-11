@@ -15,6 +15,7 @@ import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 type CustomUpdateProps = {
   htmlValue?: string;
   onValueChange?: (html: string) => void;
+  isSectionInEditMode?: boolean;
 };
 
 type EditorProps = {
@@ -23,7 +24,11 @@ type EditorProps = {
   placeholderText?: string;
 } & CustomUpdateProps;
 
-const CustomUpdate = ({ onValueChange, htmlValue }: CustomUpdateProps) => {
+const CustomUpdate = ({
+  onValueChange,
+  htmlValue,
+  isSectionInEditMode,
+}: CustomUpdateProps) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
@@ -42,11 +47,16 @@ const CustomUpdate = ({ onValueChange, htmlValue }: CustomUpdateProps) => {
         const dom = parser.parseFromString(htmlValue, "text/html");
         const nodes = $generateNodesFromDOM(editor, dom);
         const root = $getRoot();
+        root.clear();
         nodes.forEach((node) => root.append(node));
         return;
       }
     });
   }, [editor]);
+
+  useEffect(() => {
+    editor.setEditable(!!isSectionInEditMode);
+  }, [editor, isSectionInEditMode]);
 
   return null;
 };
@@ -56,6 +66,7 @@ const Editor = ({
   theme,
   onValueChange,
   htmlValue,
+  isSectionInEditMode,
 }: EditorProps) => {
   const initialConfig: InitialConfigType = {
     namespace: name,
@@ -83,7 +94,11 @@ const Editor = ({
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
-        <CustomUpdate onValueChange={onValueChange} htmlValue={htmlValue} />
+        <CustomUpdate
+          onValueChange={onValueChange}
+          htmlValue={htmlValue}
+          isSectionInEditMode={isSectionInEditMode}
+        />
       </LexicalComposer>
     </div>
   );

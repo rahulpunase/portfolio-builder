@@ -1,14 +1,14 @@
 import { MetaSectionType } from "@/lib/constants";
 import Button from "@/lib/ui/components/button";
 import { cn } from "@/lib/ui/utils";
-import { useAppDispatch } from "@/store";
-import { deleteSection } from "@/store/slice/builder";
-import { AlignJustify, Pencil, Trash } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { deleteSection, sort } from "@/store/slice/builder";
+import { selectSectionList } from "@/store/slice/builder/selectors";
+import { MoveDownIcon, MoveUpIcon, Pencil, Trash } from "lucide-react";
 import {
   ForwardRefExoticComponent,
   RefAttributes,
   createRef,
-  useEffect,
   useState,
 } from "react";
 
@@ -34,6 +34,9 @@ const withSectionHOC =
     const [isSectionInEditMode, setSectionInEditMode] = useState(false);
     const ref = createRef<WrappedRef>();
     const dispatch = useAppDispatch();
+
+    const list = useAppSelector(selectSectionList);
+    const currentSection = list.find((item) => item.type === type);
 
     const editorOnFocus = () => {
       // setIsComponentInFocus(true);
@@ -62,12 +65,26 @@ const withSectionHOC =
       );
     };
 
-    // useEffect(() => {
-    //   setSectionInEditMode(true);
-    // }, []);
+    const moveUp = () => {
+      dispatch(
+        sort({
+          dir: "up",
+          index: currentSection?.order ?? 0,
+        })
+      );
+    };
+
+    const moveDown = () => {
+      dispatch(
+        sort({
+          dir: "down",
+          index: currentSection?.order ?? 0,
+        })
+      );
+    };
 
     return (
-      <div className="relative group mb-32">
+      <div className="relative group">
         {isSectionInEditMode && (
           <div className="flex absolute w-full left-0 translate-y-[-100%] pb-2 items-center gap-x-2 justify-end mb-2">
             <Button variant="ghost" onClick={onCancelHandler}>
@@ -80,9 +97,22 @@ const withSectionHOC =
         )}
         {!isSectionInEditMode && (
           <div className="hidden group-hover:flex absolute w-full left-0 translate-y-[-100%] pb-2 items-center gap-x-2 justify-between mb-2">
-            <div>
-              <Button size="small" variant="secondary">
-                <AlignJustify className="w-4 h-4" />
+            <div className="flex flex-row">
+              <Button
+                size="small"
+                variant="secondary"
+                disabled={currentSection?.order === 0}
+                onClick={moveUp}
+              >
+                <MoveUpIcon className="w-4 h-4" />
+              </Button>
+              <Button
+                size="small"
+                variant="secondary"
+                disabled={currentSection?.order === list.length - 1}
+                onClick={moveDown}
+              >
+                <MoveDownIcon className="w-4 h-4" />
               </Button>
             </div>
             <div className="flex flex-row gap-x-2">
@@ -105,7 +135,7 @@ const withSectionHOC =
         )}
         <div
           className={cn(
-            "rounded-[16px] p-4 border border-transparent group-hover:border-border-dark",
+            "rounded-[16px] sm:p-8 p-4 border border-transparent group-hover:border-border-dark",
             isSectionInEditMode && "border border-border-dark"
           )}
         >

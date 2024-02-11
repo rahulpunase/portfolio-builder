@@ -11,9 +11,9 @@ const SkillSet = () => {
     <div className="flex w-full flex-wrap flex-row gap-4">
       {skillSetSection?.children?.map((item) => (
         <SkillCard
-          isInPreviewMode={isInPreviewMode}
           data={item}
           key={item.id}
+          isInPreviewMode={isInPreviewMode}
           isSectionInEditMode={false}
         />
       ))}

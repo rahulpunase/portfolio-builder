@@ -1,7 +1,8 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import { selectTitles } from "@/store/slice/builder/selectors";
 import { updateSubtitle, updateTitle } from "@/store/slice/builder";
-import LexEditor from "@/components/LexEditor";
+import LexEditor from "@/lib/ui/components/LexEditor";
+import useIsInPreviewMode from "@/lib/utils/hooks/useIsInPreviewMode";
 
 const Title = () => {
   const { title, subtitle } = useAppSelector(selectTitles);
@@ -9,6 +10,7 @@ const Title = () => {
 
   const onMainTitleUpdate = (html: string) => dispatch(updateTitle(html));
   const onSubtitleUpdate = (html: string) => dispatch(updateSubtitle(html));
+  const isInPreviewMode = useIsInPreviewMode();
 
   return (
     <div className="flex flex-col w-full">
@@ -21,9 +23,10 @@ const Title = () => {
           }}
           htmlValue={title}
           onValueChange={onMainTitleUpdate}
+          isSectionInEditMode={!isInPreviewMode}
         />
       </div>
-      <div className="mt-4">
+      <div className="sm:mt-4 mt-10">
         <LexEditor
           name="subtitle"
           placeholderText="Click to add subtitle"
@@ -32,6 +35,7 @@ const Title = () => {
           }}
           htmlValue={subtitle}
           onValueChange={onSubtitleUpdate}
+          isSectionInEditMode={!isInPreviewMode}
         />
       </div>
     </div>

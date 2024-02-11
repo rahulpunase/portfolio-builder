@@ -9,7 +9,7 @@ const InfoSection = () => {
   const dispatch = useAppDispatch();
   const profilePicturePreview = useAppSelector(selectProfilePicture);
   return (
-    <div className="w-full flex flex-row">
+    <div className="w-full flex sm:flex-row flex-col">
       <div>
         <LogoEditor
           preview={profilePicturePreview}
@@ -18,7 +18,7 @@ const InfoSection = () => {
         />
         <PersonalInfoEditor />
       </div>
-      <div className="flex flex-grow ml-[80px] justify-center items-center">
+      <div className="flex flex-grow sm:ml-[80px] min-h-[400px] justify-center items-center">
         <Title />
       </div>
     </div>

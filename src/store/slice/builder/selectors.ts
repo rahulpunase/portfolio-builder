@@ -40,3 +40,27 @@ export const selectSkillsSetSection = createSelector(
       | DefaultSectionConfig<"SKILLS">
       | undefined
 );
+
+export const selectProjectsSection = createSelector(
+  selectSectionList,
+  (list) =>
+    list.find((item) => item.type === "PROJECTS") as
+      | DefaultSectionConfig<"PROJECTS">
+      | undefined
+);
+
+export const selectExperienceSection = createSelector(
+  selectSectionList,
+  (list) =>
+    list.find((item) => item.type === "EXPERIENCE") as
+      | DefaultSectionConfig<"EXPERIENCE">
+      | undefined
+);
+
+export const selectCTASection = createSelector(
+  selectSectionList,
+  (list) =>
+    list.find((item) => item.type === "CTA") as
+      | DefaultSectionConfig<"CTA">
+      | undefined
+);
