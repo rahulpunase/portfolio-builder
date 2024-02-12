@@ -1,5 +1,10 @@
 import { v4 as uuid } from "uuid";
 
+export const APP_PATHS = {
+  Builder: "/builder",
+  Preview: "/preview",
+};
+
 export type MetaSectionType =
   | "ABOUT"
   | "SKILLS"
