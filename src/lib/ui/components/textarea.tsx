@@ -1,7 +1,7 @@
-import React, { TextareaHTMLAttributes } from "react";
+import { TextareaHTMLAttributes } from "react";
 import { cn } from "../utils";
 
-type TextAreaProps = {} & TextareaHTMLAttributes<HTMLTextAreaElement>;
+type TextAreaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 const TextArea = ({ children, className, ...rest }: TextAreaProps) => {
   return (

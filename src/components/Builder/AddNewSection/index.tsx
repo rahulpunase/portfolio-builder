@@ -7,14 +7,7 @@ import {
 } from "@/lib/ui/components/dropdownMenu";
 import { useAppDispatch } from "@/store";
 import { addSection } from "@/store/slice/builder";
-import {
-  Globe,
-  Lightbulb,
-  Link,
-  LucideIcon,
-  PencilRuler,
-  PinIcon,
-} from "lucide-react";
+import { Globe, Lightbulb, Link, PencilRuler, PinIcon } from "lucide-react";
 import { ReactNode } from "react";
 
 const ButtonIcon = () => {

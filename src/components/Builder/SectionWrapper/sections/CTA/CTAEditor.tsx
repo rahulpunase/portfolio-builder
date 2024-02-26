@@ -40,7 +40,7 @@ const CTAEditor = ({
       </div>
       <div className="flex flex-row items-center">
         <div className="mr-4">
-          <LogoEditor variant="small" />
+          <LogoEditor onUpdate={() => null} preview="" variant="small" />
         </div>
         <div className="text-[14px]">Let's connect</div>
       </div>

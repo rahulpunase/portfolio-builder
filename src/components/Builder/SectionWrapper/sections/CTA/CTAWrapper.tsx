@@ -29,6 +29,8 @@ const ExtendibleCTAEditor = forwardRef<WrappedRef, WrappedProps>(
     }));
     return (
       <CTAEditor
+        subtext=""
+        title=""
         isInPreviewMode={false}
         isSectionInEditMode={props.isSectionInEditMode}
         onValueChange={onValueChange}
